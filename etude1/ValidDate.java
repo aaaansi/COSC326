@@ -6,7 +6,7 @@ public class ValidDate {
 
     public static void main(String[] args) throws FileNotFoundException {
         // Read from file and save to var input
-        File file = new File("/Users/Hamzah/Desktop/COSC326/COSC326-ETUDES/etude1/1.in");
+        File file = new File("/Users/Hamzah/Desktop/COSC326/COSC326-ETUDES/etude1/invalid.txt");
         Scanner scan = new Scanner(file);
         String dateString = "";
         String monthInput = "";
@@ -70,9 +70,13 @@ public class ValidDate {
     // Check if the given date is valid based on the provided criteria
     private static boolean isDateValid(String date) {
         String[] components = date.split(" ");
+        if (date == null || date.isEmpty() || date.length() < 6) {
+            // Null or empty string is not a valid date format
+            return false;
+        }
         int year = Integer.parseInt(components[2]);
-        int day = Integer.parseInt(components[0]);
-        int month = getMonth(date);
+        int day = isValidDay(components[0]);
+        int month = getMonth(components[1]);
 
         // YEAR RANGE CHECK
         if (year < 1753 || year > 3000) {
@@ -126,17 +130,12 @@ public class ValidDate {
         return true;
     }
 
-    public static int getMonth(String date) {
-        String[] parts = date.split(" ");
-        if (parts.length != 3) {
-            System.out.println("INVALID INPUT");
-            return -1;
-        }
+    public static int getMonth(String dateMonth) {
         int month;
         try {
-            month = Integer.parseInt(parts[1]);
+            month = Integer.parseInt(dateMonth);
         } catch (NumberFormatException e) {
-            String monthStr = parts[1].toUpperCase();
+            String monthStr = dateMonth.toUpperCase();
             switch (monthStr) {
                 case "JAN":
                     month = 1;
@@ -184,6 +183,20 @@ public class ValidDate {
             return -1;
         }
         return month;
+    }
+
+    public static int isValidDay(String dayDate) {
+        int day = 0;
+        try {
+            day = Integer.parseInt(dayDate);
+            if (day > 31) {
+                return -1;
+            }
+            return day;
+        } catch (NumberFormatException nfe) {
+            System.out.println(dayDate + " - INVALID day");
+            return -1;
+        }
     }
 
     // toString method that returns the output in the specified format

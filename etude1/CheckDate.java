@@ -5,13 +5,14 @@ import java.util.Scanner;
 public class CheckDate {
     public static int month = 0;
     public static int day = 0;
+    public static String monthStr = "";
+    public static int year = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
         File file = new File("/Users/Hamzah/Desktop/COSC326/cosc326-etudes/etude1/1.in");
         Scanner scan = new Scanner(file);
         String dateString = "";
         String dayStr = "";
-        String monthStr = "";
         String yearStr = "";
 
         while (scan.hasNextLine()) {
@@ -23,14 +24,16 @@ public class CheckDate {
                 dayStr = dateString.substring(0, dateString.indexOf(" "));
                 monthStr = dateString.substring(dateString.indexOf(" ") + 1, dateString.lastIndexOf(" "));
                 yearStr = dateString.substring(dateString.lastIndexOf(" ") + 1);
-                // System.out.println(dayStr);
                 // System.out.println(monthStr);
+                // System.out.println(dayStr);
+                // System.out.print(isValidMonth(monthStr) + "\t");
+                System.out.println(monthStr.toUpperCase());
                 // System.out.println(yearStr);
-                if (isValidDay(dayStr) && isValidMonth(monthStr) && isValidYear(yearStr)) {
-                    toString(dateString);
+                if (isValidDay(dayStr) && isValidMonth(monthStr.toUpperCase()) && isValidYear(yearStr)) {
+                    toString(dateString + "TRUE");
                 } else {
-                    System.out.print(isValidYear(yearStr) + "\t");
-                    System.out.println(dateString + "- Invalid Range");
+                    System.out.print(isValidMonth(monthStr.toUpperCase()) + "\t" + monthStr + "\t");
+                    System.out.println(dateString);
                 }
             } else {
                 System.out.println(dateString + "- INVALID INPUT");
@@ -63,44 +66,53 @@ public class CheckDate {
 
     private static Boolean isValidMonth(String monthDate) {
         String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
-        for (int i = 0; i < monthArr.length; i++) {
-            if (monthArr[i].equalsIgnoreCase(monthDate)) {
-                month = i + 1;
-                return true;
+        String lowMonth = monthDate.toLowerCase();
+        String highMonth = monthDate.toUpperCase();
+        String firstLetterMonth = monthDate.substring(0, 1).toUpperCase() + monthDate.substring(1).toLowerCase();
+        try {
+            month = Integer.parseInt(monthDate);
+            if (month > 0 && month <= 12) {
+                monthStr = monthArr[month];
             } else {
-                return false;
+                System.out.println("Month out of range");
+            }
+        } catch (NumberFormatException e) {
+            for (int i = 0; i < monthArr.length; i++) {
+                if (monthArr[i].toUpperCase().equals(monthDate)) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
     public static boolean isValidYear(String yearDate) {
-        // Check if year is either 2 or 4 digits
-        if (yearDate.length() != 2 && yearDate.length() != 4) {
-            return false;
-        }
-
-        // Check if year contains only digits
-        for (char c : yearDate.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
+        try {
+            year = Integer.parseInt(yearDate);
+            if (year < 100) {
+                if (year >= 50) {
+                    year += 1900;
+                    return true;
+                } else {
+                    year += 2000;
+                    return true;
+                }
             }
-        }
-
-        // Convert year to integer and check if it is between 1 and 9999 (inclusive)
-        int yearValue = Integer.parseInt(yearDate);
-        if (yearValue > 1773 || yearValue < 3000) {
+        } catch (NumberFormatException e) {
+            System.out.println("Year out of Range");
             return false;
         }
 
-        // Year is valid if all checks pass
         return true;
     }
 
     public static void toString(String date) {
         String[] parts = date.split(" ");
         int day = Integer.parseInt(parts[0]);
-        int year = Integer.parseInt(parts[2]);
+        // int year = Integer.parseInt(parts[2]);
 
         String monthName = "";
         switch (month) {
