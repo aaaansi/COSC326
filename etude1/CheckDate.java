@@ -5,10 +5,10 @@ import java.util.Scanner;
 public class CheckDate {
     public static int month = 0;
     public static int day = 0;
+    public static int year = 0;
     public static String monthStr = "";
     public static String dayStr = "";
     public static String yearStr = "";
-    public static int year = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
         File file = new File("/Users/Hamzah/Desktop/COSC326/cosc326-etudes/etude1/1.in");
@@ -17,14 +17,16 @@ public class CheckDate {
         String newInput = "";
 
         while (scan.hasNextLine()) {
-            dateString = scan.nextLine();
+            String initialInput = scan.nextLine();
+            dateString = initialInput;
             dateString = dateString.replace('/', ' ');
             newInput = dateString.replace('-', ' ');
             System.out.println(newInput + "\t!!!");
             dayStr = newInput.substring(0, newInput.indexOf(" "));
             monthStr = newInput.substring(newInput.indexOf(" ") + 1, newInput.lastIndexOf(" "));
             yearStr = newInput.substring(newInput.lastIndexOf(" ") + 1);
-            // System.out.print(isValidYear(yearStr) + "------");
+            System.out.print(isValidMonth(monthStr) + "------");
+
         }
     }
 
@@ -58,6 +60,7 @@ public class CheckDate {
         } catch (NumberFormatException e) {
             for (int i = 0; i < monthArr.length; i++) {
                 if (monthArr[i].equalsIgnoreCase(monthDate)) {
+                    month = i + 1;
                     return true;
                 }
             }
@@ -87,55 +90,20 @@ public class CheckDate {
         }
     }
 
-    public static void toString(String date) {
-        String[] parts = date.split(" ");
-        int day = Integer.parseInt(parts[0]);
-        // int year = Integer.parseInt(parts[2]);
+    // public static void toString(String date) {
 
-        String monthName = "";
-        switch (month) {
-            case 1:
-                monthName = "Jan";
-                break;
-            case 2:
-                monthName = "Feb";
-                break;
-            case 3:
-                monthName = "Mar";
-                break;
-            case 4:
-                monthName = "Apr";
-                break;
-            case 5:
-                monthName = "May";
-                break;
-            case 6:
-                monthName = "Jun";
-                break;
-            case 7:
-                monthName = "Jul";
-                break;
-            case 8:
-                monthName = "Aug";
-                break;
-            case 9:
-                monthName = "Sep";
-                break;
-            case 10:
-                monthName = "Oct";
-                break;
-            case 11:
-                monthName = "Nov";
-                break;
-            case 12:
-                monthName = "Dec";
-                break;
-            default:
-                // System.out.println("INVALID INPUT booty");
-        }
+    // String[] parts = date.split(" ");
+    // int day = Integer.parseInt(parts[0]);
+    // int month = Integer.parseInt(parts[1]);
+    // int year = Integer.parseInt(parts[2]);
+    // System.out.println(month + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
-        System.out.println(String.format("%02d %s %04d", day, monthName.toUpperCase(), year));
+    // String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG",
+    // "SEP", "OCT", "NOV", "DEC" };
 
-    }
+    // System.out.println(String.format("%02d %s %04d", day, month, year) +
+    // "@@@@@@");
+
+    // }
 
 }
