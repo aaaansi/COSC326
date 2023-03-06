@@ -6,7 +6,7 @@ public class ValidDate {
 
     public static void main(String[] args) throws FileNotFoundException {
         // Read from file and save to var input
-        File file = new File("/Users/Hamzah/Desktop/COSC326/COSC326-ETUDES/etude1/invalid.txt");
+        File file = new File("/Users/Hamzah/Desktop/COSC326/COSC326-ETUDES/etude1/1.in");
         Scanner scan = new Scanner(file);
         String dateString = "";
         String monthInput = "";
@@ -20,7 +20,7 @@ public class ValidDate {
             dateString = dateString.replace("-", " ");
             dayInput = dateString.substring(0, dateString.indexOf(' '));
             if (dayInput.contains("-")) {
-                System.out.print(dateString + "- INVALID");
+                System.out.print(dateString + "- INVALID day");
                 dateString = scan.nextLine();
             }
             System.out.print(dateString + "\t");
@@ -28,17 +28,17 @@ public class ValidDate {
             // if (dateString.indexOf('/') && dateString.indexOf(dateString.indexOf('/') +
             // 1, dateString.indexOf('-'))) {
             // }
-            String input = dateString.replace('-', ' ');
-            input = input.replace('/', ' ');
+            // String input = dateString.replace('-', ' ');
+            // input = input.replace('/', ' ');
 
-            monthInput = input.substring(input.indexOf(' ') + 1, input.lastIndexOf(' ')).toUpperCase();
+            monthInput = dateString.substring(dateString.indexOf(' ') + 1, dateString.lastIndexOf(' ')).toUpperCase();
             // int realMonthInput = Integer.parseInt(monthInput);
             // System.out.println(monthInput);
 
             // int realDayInput = Integer.parseInt(dayInput);
 
             // Checks if the year input is 2 digits and formats it properly
-            inputKla = input.substring(input.lastIndexOf(' ') + 1, input.length());
+            inputKla = dateString.substring(dateString.lastIndexOf(' ') + 1, dateString.length());
 
             yearlyInput = Integer.parseInt(inputKla);
             if (yearlyInput < 100) {
