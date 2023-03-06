@@ -3,98 +3,68 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class ValidDate {
-    public static String dayInput = "";
-    public static int yearlyInput = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
         // Read from file and save to var input
-        File file = new File("/Users/Hamzah/Desktop/COSC326/cosc326-etudes/etude1/invalid.txt");
+        File file = new File("/Users/Hamzah/Desktop/COSC326/COSC326-ETUDES/etude1/1.in");
         Scanner scan = new Scanner(file);
         String dateString = "";
         String monthInput = "";
+        String dayInput = "";
         String inputKla = "";
         String CorrectInput = "";
-
+        int yearlyInput = 0;
         while (scan.hasNextLine()) {
             dateString = scan.nextLine();
+            dateString = dateString.replace("/", " ");
+            dateString = dateString.replace("-", " ");
+            dayInput = dateString.substring(0, dateString.indexOf(' '));
+            if (dayInput.contains("-")) {
+                System.out.print(dateString + "- INVALID");
+                dateString = scan.nextLine();
+            }
+            System.out.print(dateString + "\t");
+            // replacing any given format to format that contains '/'
+            // if (dateString.indexOf('/') && dateString.indexOf(dateString.indexOf('/') +
+            // 1, dateString.indexOf('-'))) {
+            // }
             String input = dateString.replace('-', ' ');
             input = input.replace('/', ' ');
 
-            if (!isStringValid(input)) {
-                System.out.println(input + "- INVALID");
-                dateString = scan.nextLine();
-            } else {
-                System.out.print(input + "\t");
-                // replacing any given format to format that contains '/'
+            monthInput = input.substring(input.indexOf(' ') + 1, input.lastIndexOf(' ')).toUpperCase();
+            // int realMonthInput = Integer.parseInt(monthInput);
+            // System.out.println(monthInput);
 
-                monthInput = input.substring(input.indexOf(' ') + 1, input.lastIndexOf(' ')).toUpperCase();
-                // int realMonthInput = Integer.parseInt(monthInput);
-                // System.out.println(monthInput);
+            // int realDayInput = Integer.parseInt(dayInput);
 
-                // int realDayInput = Integer.parseInt(dayInput);
+            // Checks if the year input is 2 digits and formats it properly
+            inputKla = input.substring(input.lastIndexOf(' ') + 1, input.length());
 
-                // Checks if the year input is 2 digits and formats it properly
-                inputKla = input.substring(input.lastIndexOf(' ') + 1, input.length());
-
-                yearlyInput = Integer.parseInt(inputKla);
-                if (yearlyInput < 100) {
-                    if (yearlyInput >= 50) {
-                        yearlyInput += 1900;
-                    } else {
-                        yearlyInput += 2000;
-
-                    }
-                }
-
-                CorrectInput = dayInput + " " + monthInput + " " + yearlyInput;
-                // if (dayInput.matches(".*[a-zA-Z].*") || (yearlyInput +
-                // "").matches(".*[a-zA-Z].*")) {
-                // System.err.println("error");
-                // System.exit(1);
-                // }
-                if (isDateValid(CorrectInput)) {
-                    System.out.println(toString(CorrectInput) + "\t");
+            yearlyInput = Integer.parseInt(inputKla);
+            if (yearlyInput < 100) {
+                if (yearlyInput >= 50) {
+                    yearlyInput += 1900;
                 } else {
-                    System.out.println(CorrectInput + " - INVALID");
+                    yearlyInput += 2000;
+
                 }
             }
 
+            CorrectInput = dayInput + " " + monthInput + " " + yearlyInput;
+            if (dayInput.matches(".*[a-zA-Z].*") || (yearlyInput + "").matches(".*[a-zA-Z].*")) {
+                System.err.println("error");
+                System.exit(1);
+            }
+            if (isDateValid(CorrectInput)) {
+                System.out.println(toString(CorrectInput) + "\t");
+            } else {
+                System.out.println(CorrectInput + " - INVALID");
+            }
         }
         scan.close();
 
         // System.out.println(CorrectInput);
 
-    }
-
-    private static boolean isStringValid(String date) {
-
-        if (date == null || date.isEmpty()) {
-            // Null or empty string is not a valid date format
-            return false;
-        }
-
-        String dayStr = date.substring(0, date.indexOf(" "));
-        String yearStr = date.substring(date.lastIndexOf(" "));
-        if (yearStr.length() > 4 || yearStr.length() < 2 || yearStr.length() == 3) {
-            return false;
-        }
-        // try catch that checks if the day is valid
-        try {
-            dayInput = Integer.parseInt(dayStr) + "";
-            yearlyInput = Integer.parseInt(yearStr);
-        } catch (NumberFormatException nfe) {
-            System.out.println(date + " - INVALID");
-            return false;
-        }
-
-        // try {
-        // yearStr = Integer.parseInt(yearStr) + "";
-        // } catch (NumberFormatException e) {
-        // System.out.println(date + " - INVALID");
-        // return false;
-        // }
-
-        return true;
     }
 
     // Check if the given date is valid based on the provided criteria
