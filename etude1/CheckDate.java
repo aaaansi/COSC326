@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.security.AllPermission;
 import java.util.Scanner;
 
 public class CheckDate {
@@ -43,7 +44,7 @@ public class CheckDate {
                 // System.out.println(+"------");
 
             } else {
-                System.out.println(" - INVALID");
+                System.out.println(initialInput + " - INVALID");
             }
 
         }
@@ -52,17 +53,35 @@ public class CheckDate {
 
     public static boolean isValidString(String date) {
         Boolean flag = date.contains("-") && date.contains("/");
-        Boolean secondFlag = date.contains(" ");
-        if (date == null || date.isEmpty() || date.length() < 6 || date.contains(".") || flag || !secondFlag) {
+
+        String[] dateParts = date.split("[/ -]");
+
+        if (dateParts.length != 3) {
+
+            return false;
+        }
+        int yearLength = dateParts[2].length();
+        // Boolean secondFlag = !date.contains(" ");
+        if (date == null || date.isEmpty() || date.length() < 6 || date.contains(".") || flag) {
             // Null or empty string is not a valid date format
             return false;
         }
-        return true;
+        if (yearLength == 4 || yearLength == 2) {
+            return true;
+        } else {
+            return false;
+        }
+
+        // return true;
     }
 
     public static boolean isValidDay(String dayDate) {
         // int day = 0;
         try {
+
+            if (dayDate.length() > 2) {
+                return false;
+            }
             day = Integer.parseInt(dayDate);
             if (day > 31) {
                 return false;
@@ -77,7 +96,16 @@ public class CheckDate {
     private static Boolean isValidMonth(String monthDate) {
         String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
         try {
-            month = Integer.parseInt(monthDate);
+            if (monthDate.length() > 3) {
+                return false;
+            }
+            if (monthDate.length() == 3) {
+                month = Integer.parseInt(monthDate);
+                return false;
+            } else {
+                month = Integer.parseInt(monthDate);
+            }
+
             if (month == 2) {
                 if (year % 4 != 0) {
                     if (day > 28) {
@@ -123,12 +151,22 @@ public class CheckDate {
             for (int i = 0; i < monthArr.length; i++) {
                 boolean allLowercase = monthDate.equals(monthDate.toLowerCase());
                 boolean allUppercase = monthDate.equals(monthDate.toUpperCase());
-                boolean firstUppercase = monthDate.substring(0, 1).equals(monthDate.substring(0, 1).toUpperCase())
+                boolean firstUppercase = monthDate.substring(0,
+                        1).equals(monthDate.substring(0, 1).toUpperCase())
                         && monthDate.substring(1).equals(monthDate.substring(1).toLowerCase());
-                if (monthArr[i].equalsIgnoreCase(monthDate) && allLowercase && allUppercase && firstUppercase) {
-                    month = i + 1;
-                    return true;
+                // System.out.println(allLowercase + "\t " + allUppercase + "\t" +
+                // firstUppercase);
+                // System.out.print(allLowercase + " " + allUppercase + " " + firstUppercase +
+                // "------");
+                if (allLowercase || allUppercase || firstUppercase) {
+                    if (monthArr[i].equalsIgnoreCase(monthDate)) {
+                        month = i + 1;
+                        return true;
+                    }
+                } else {
+                    return false;
                 }
+
             }
             return false;
         }
@@ -196,7 +234,7 @@ public class CheckDate {
                 monthName = "Dec";
                 break;
             default:
-                return "INVALID INPUT";
+                return " - INVALID";
         }
 
         return String.format("%02d %s %04d", day, monthName, year);

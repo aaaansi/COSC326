@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "CheckDate",
+            "request": "launch",
+            "mainClass": "CheckDate",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
+            "name": "HelloWorld",
+            "request": "launch",
+            "mainClass": "HelloWorld",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
+            "name": "KochSnowflake",
+            "request": "launch",
+            "mainClass": "KochSnowflake",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
+            "name": "SyllableCounter",
+            "request": "launch",
+            "mainClass": "SyllableCounter",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
+            "name": "ValidDate",
+            "request": "launch",
+            "mainClass": "ValidDate",
+            "projectName": "cosc326-etudes_92c35848"
+        }
+    ]
+}
