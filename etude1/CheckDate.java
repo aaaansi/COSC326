@@ -60,6 +60,9 @@ public class CheckDate {
 
             return false;
         }
+        // if (date.charAt(0) == "[/ -]") {
+
+        // }
         int yearLength = dateParts[2].length();
         // Boolean secondFlag = !date.contains(" ");
         if (date == null || date.isEmpty() || date.length() < 6 || date.contains(".") || flag) {
@@ -83,7 +86,7 @@ public class CheckDate {
                 return false;
             }
             day = Integer.parseInt(dayDate);
-            if (day > 31) {
+            if (day > 31 || day < 1) {
                 return false;
             }
             return true;
@@ -96,7 +99,7 @@ public class CheckDate {
     private static Boolean isValidMonth(String monthDate) {
         String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
         try {
-            if (monthDate.length() > 3) {
+            if (monthDate.length() > 3 || monthDate.length() < 1) {
                 return false;
             }
             if (monthDate.length() == 3) {
@@ -161,12 +164,37 @@ public class CheckDate {
                 if (allLowercase || allUppercase || firstUppercase) {
                     if (monthArr[i].equalsIgnoreCase(monthDate)) {
                         month = i + 1;
-                        return true;
+                        if (month == 2) {
+                            if (year % 4 != 0) {
+                                if (day > 28) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } else if (year % 100 != 0) {
+                                if (day > 29) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } else if (year % 400 != 0) {
+                                if (day > 28) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            } else {
+                                if (day > 29) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+                        }
+                    } else {
+                        return false;
                     }
-                } else {
-                    return false;
                 }
-
             }
             return false;
         }
@@ -175,20 +203,44 @@ public class CheckDate {
 
     public static boolean isValidYear(String yearDate) {
         try {
-            year = Integer.parseInt(yearDate);
-            if (year < 100) {
-                if (year >= 50) {
-                    year += 1900;
-                } else {
-                    year += 2000;
+            if (yearDate.length() == 2) {
+                // yearDate = yearDate.substring(0, 1);
+                year = Integer.parseInt(yearDate);
+                if (year < 100) {
+                    if (year >= 50) {
+                        year += 1900;
+                    } else {
+                        year += 2000;
 
+                    }
                 }
+                if (year < 1753 || year > 3000) {
+                    System.err.print("Year out of range \t");
+                    return false;
+                }
+                return true;
             }
-            if (year < 1753 || year > 3000) {
-                System.err.print("Year out of range \t");
+            if (yearDate.length() == 4 && yearDate.startsWith("0")) {
                 return false;
             }
-            return true;
+            if (yearDate.length() == 4) {
+                year = Integer.parseInt(yearDate);
+                if (year < 100) {
+                    if (year >= 50) {
+                        year += 1900;
+                    } else {
+                        year += 2000;
+
+                    }
+                }
+                if (year < 1753 || year > 3000) {
+                    System.err.print("Year out of range \t");
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
         } catch (NumberFormatException e) {
             return false;
         }
