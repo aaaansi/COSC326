@@ -10,10 +10,11 @@ public class CheckDate {
     public static String monthStr = "";
     public static String dayStr = "";
     public static String yearStr = "";
+    public static String dateString = "";
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner scan = null;
-        String dateString = "";
+
         String newInput = "";
         if (args.length > 0) { // if command line argument provided
             try {
@@ -28,7 +29,9 @@ public class CheckDate {
         while (scan.hasNextLine()) {
             String initialInput = scan.nextLine();
             dateString = initialInput;
+
             if (isValidString(dateString)) {
+
                 dateString = dateString.replace('/', ' ');
                 newInput = dateString.replace('-', ' ');
                 // System.out.println(newInput + "\t!!!");
@@ -36,7 +39,9 @@ public class CheckDate {
                 monthStr = newInput.substring(newInput.indexOf(" ") + 1, newInput.lastIndexOf(" "));
                 yearStr = newInput.substring(newInput.lastIndexOf(" ") + 1);
 
-                if (isValidDay(dayStr) && isValidYear(yearStr) && isValidMonth(monthStr)) {
+                if (initialInput.charAt(0) == ' ' || initialInput.charAt(initialInput.length() - 1) == ' ') {
+                    System.out.println(initialInput + " - INVALID");
+                } else if (isValidDay(dayStr) && isValidYear(yearStr) && isValidMonth(monthStr)) {
                     System.out.println(toString(day + " " + month + " " + year));
                 } else {
                     System.out.println(initialInput + " - INVALID");
@@ -99,16 +104,15 @@ public class CheckDate {
     private static Boolean isValidMonth(String monthDate) {
         String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
         try {
-            if (monthDate.length() > 3 || monthDate.length() < 1) {
+            if (monthDate.length() >= 3) {
+                if (monthDate.startsWith("0")) {
+                    return false;
+                }
+            }
+            month = Integer.parseInt(monthDate);
+            if (month == 0) {
                 return false;
             }
-            if (monthDate.length() == 3) {
-                month = Integer.parseInt(monthDate);
-                return false;
-            } else {
-                month = Integer.parseInt(monthDate);
-            }
-
             if (month == 2) {
                 if (year % 4 != 0) {
                     if (day > 28) {
@@ -151,16 +155,13 @@ public class CheckDate {
             }
             return true;
         } catch (NumberFormatException e) {
+            boolean allLowercase = monthDate.equals(monthDate.toLowerCase());
+            boolean allUppercase = monthDate.equals(monthDate.toUpperCase());
+            boolean firstUppercase = monthDate.substring(0,
+                    1).equals(monthDate.substring(0, 1).toUpperCase())
+                    && monthDate.substring(1).equals(monthDate.substring(1).toLowerCase());
+
             for (int i = 0; i < monthArr.length; i++) {
-                boolean allLowercase = monthDate.equals(monthDate.toLowerCase());
-                boolean allUppercase = monthDate.equals(monthDate.toUpperCase());
-                boolean firstUppercase = monthDate.substring(0,
-                        1).equals(monthDate.substring(0, 1).toUpperCase())
-                        && monthDate.substring(1).equals(monthDate.substring(1).toLowerCase());
-                // System.out.println(allLowercase + "\t " + allUppercase + "\t" +
-                // firstUppercase);
-                // System.out.print(allLowercase + " " + allUppercase + " " + firstUppercase +
-                // "------");
                 if (allLowercase || allUppercase || firstUppercase) {
                     if (monthArr[i].equalsIgnoreCase(monthDate)) {
                         month = i + 1;
@@ -190,15 +191,28 @@ public class CheckDate {
                                     return true;
                                 }
                             }
+
                         }
-                    } else {
-                        return false;
+                        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10
+                                || month == 12) {
+                            if (day > 31) {
+                                System.err.println("INVALID DAY OUT OF RANGE FOR MONTHS WITH 31 DAYS");
+                                return false;
+                            }
+                            return true;
+                        } else {
+                            if (day > 30) {
+                                System.err.println("INVALID DAY OUT OF RANGE FOR MONTHS WITH 30 DAYS");
+                                return false;
+                            }
+                        }
+                        return true;
                     }
                 }
             }
+
             return false;
         }
-
     }
 
     public static boolean isValidYear(String yearDate) {
@@ -286,7 +300,7 @@ public class CheckDate {
                 monthName = "Dec";
                 break;
             default:
-                return " - INVALID";
+                return dateString + " - INVALID";
         }
 
         return String.format("%02d %s %04d", day, monthName, year);
