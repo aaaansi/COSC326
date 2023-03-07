@@ -21,13 +21,21 @@ public class CheckDate {
             dateString = initialInput;
             dateString = dateString.replace('/', ' ');
             newInput = dateString.replace('-', ' ');
-            System.out.println(newInput + "\t!!!");
+            // System.out.println(newInput + "\t!!!");
             dayStr = newInput.substring(0, newInput.indexOf(" "));
             monthStr = newInput.substring(newInput.indexOf(" ") + 1, newInput.lastIndexOf(" "));
             yearStr = newInput.substring(newInput.lastIndexOf(" ") + 1);
-            System.out.print(isValidMonth(monthStr) + "------");
+
+            if (isValidDay(dayStr) && isValidMonth(monthStr) && isValidYear(yearStr)) {
+                // String finalInput = day + " " + month + " " + year;
+                System.out.println(toString(day + " " + month + " " + year));
+            } else {
+                System.out.println(initialInput + "\tINVALID INPUT");
+            }
+            // System.out.println(+"------");
 
         }
+        scan.close();
     }
 
     public static boolean isValidString(String date) {
@@ -90,20 +98,50 @@ public class CheckDate {
         }
     }
 
-    // public static void toString(String date) {
+    public static String toString(String data) {
+        String monthName;
+        switch (month) {
+            case 1:
+                monthName = "Jan";
+                break;
+            case 2:
+                monthName = "Feb";
+                break;
+            case 3:
+                monthName = "Mar";
+                break;
+            case 4:
+                monthName = "Apr";
+                break;
+            case 5:
+                monthName = "May";
+                break;
+            case 6:
+                monthName = "Jun";
+                break;
+            case 7:
+                monthName = "Jul";
+                break;
+            case 8:
+                monthName = "Aug";
+                break;
+            case 9:
+                monthName = "Sep";
+                break;
+            case 10:
+                monthName = "Oct";
+                break;
+            case 11:
+                monthName = "Nov";
+                break;
+            case 12:
+                monthName = "Dec";
+                break;
+            default:
+                return "INVALID INPUT";
+        }
 
-    // String[] parts = date.split(" ");
-    // int day = Integer.parseInt(parts[0]);
-    // int month = Integer.parseInt(parts[1]);
-    // int year = Integer.parseInt(parts[2]);
-    // System.out.println(month + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
-    // String[] monthArr = { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG",
-    // "SEP", "OCT", "NOV", "DEC" };
-
-    // System.out.println(String.format("%02d %s %04d", day, month, year) +
-    // "@@@@@@");
-
-    // }
+        return String.format("%02d %s %04d", day, monthName, year);
+    }
 
 }
