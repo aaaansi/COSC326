@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SnowflakeMain",
+            "request": "launch",
+            "mainClass": "SnowflakeMain",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
