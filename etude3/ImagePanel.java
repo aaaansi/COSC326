@@ -1,8 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Polygon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -17,7 +15,7 @@ public class ImagePanel extends JPanel {
   public ImagePanel(int panelSize) {
     this.panelSize = panelSize;
     setPreferredSize(new Dimension(panelSize, panelSize));
-    levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the Koch Snowflake"));
+
   }
 
   @Override
@@ -58,6 +56,10 @@ public class ImagePanel extends JPanel {
       drawKochSnowflake(g, lev - 1, x3, y3, x4, y4);
       drawKochSnowflake(g, lev - 1, x4, y4, x5, y5);
     }
+  }
+
+  public void setLevels(int level) {
+    levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the Koch Snowflake"));
   }
 
   // private Point getThirdPoint(Point p1, Point p2) {

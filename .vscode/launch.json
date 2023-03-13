@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LookWhosTalking",
+            "request": "launch",
+            "mainClass": "etude5.LookWhosTalking",
+            "projectName": "cosc326-etudes_92c35848"
+        },
+        {
+            "type": "java",
             "name": "SnowflakeMain",
             "request": "launch",
             "mainClass": "SnowflakeMain",
