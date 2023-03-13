@@ -1,21 +1,29 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class ImagePanel extends JPanel {
+public class ImagePanel extends JPanel implements MouseWheelListener {
 
   private static final double ANGLE = Math.toRadians(60);
   private static final double SCALE_FACTOR = 1.0 / 3.0;
 
   private int panelSize;
   private int levels;
+  private double zoomFactor = 1.0;
 
   public ImagePanel(int panelSize) {
     this.panelSize = panelSize;
     setPreferredSize(new Dimension(panelSize, panelSize));
-
+    // levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the
+    // Koch Snowflake"));
+    addMouseWheelListener(this);
   }
 
   @Override
@@ -23,13 +31,19 @@ public class ImagePanel extends JPanel {
     super.paintComponent(g);
     g.setColor(Color.BLUE);
 
-    // Point p1 = new Point(centerX, centerY - side / 2);
-    // Point p2 = new Point(centerX + side / 2, centerY + side / 2);
-    // Point p3 = new Point(centerX - side / 2, centerY + side / 2);
+    int centerX = getWidth() / 2;
+    int centerY = getHeight() / 2;
+
+    int side = (int) (panelSize / zoomFactor);
+
+    Point p1 = new Point(centerX, centerY - side / 2);
+    Point p2 = new Point(centerX + side / 2, centerY + side / 2);
+    Point p3 = new Point(centerX - side / 2, centerY + side / 2);
 
     drawKochSnowflake(g, levels, 20, 280, 280, 280);
     drawKochSnowflake(g, levels, 280, 280, 150, 20);
     drawKochSnowflake(g, levels, 150, 20, 20, 280);
+
   }
 
   private void drawKochSnowflake(Graphics g, int lev, int x1, int y1, int x5, int y5) {
@@ -59,20 +73,18 @@ public class ImagePanel extends JPanel {
   }
 
   public void setLevels(int level) {
-    levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the Koch Snowflake"));
+    this.levels = level;
+    repaint();
   }
 
-  // private Point getThirdPoint(Point p1, Point p2) {
-  // int dx = p2.x - p1.x;
-  // int dy = p2.y - p1.y;
-  // int x = p1.x + (int) (dx * 0.5 + dy * 0.5 * Math.sqrt(3));
-  // int y = p1.y + (int) (dy * 0.5 - dx * 0.5 * Math.sqrt(3));
-  // return new Point(x, y);
-  // }
-
-  // private Point getMidpoint(Point p1, Point p2) {
-  // int x = (int) ((1 - SCALE_FACTOR) * p1.x + SCALE_FACTOR * p2.x);
-  // int y = (int) ((1 - SCALE_FACTOR) * p1.y + SCALE_FACTOR * p2.y);
-  // return new Point(x, y);
-  // }
+  @Override
+  public void mouseWheelMoved(MouseWheelEvent e) {
+    int notches = e.getWheelRotation();
+    if (notches < 0) {
+      zoomFactor *= 1.1;
+    } else {
+      zoomFactor /= 1.1;
+    }
+    repaint();
+  }
 }
