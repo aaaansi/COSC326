@@ -18,7 +18,7 @@ public class SyllableCounter {
         while (scan.hasNextLine()) {
             String word = scan.nextLine().toLowerCase();
             if (word.isEmpty() || word.equalsIgnoreCase("")) {
-                String word = scan.nextLine().toLowerCase();
+                word = scan.nextLine().toLowerCase();
             }
             int syllables = countSyllables(word);
             System.out.println(syllables);
