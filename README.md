@@ -6,4 +6,4 @@ COSC326 is a problem solving course that presents a series of exercises, called 
     * for example; 
         - javac checkDate.java
         - java checkDate < 1.in
-  * The test files used are also in the same repository folder and were taken from the discord server. I will be uploading my own test files later to achieve excellence.
+  * The test files used are also in the same repository folder and were taken from the discord server. most of my own tests were done using basic line input so I will later on add those to a text file.
