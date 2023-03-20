@@ -2,6 +2,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/**
+ * \
+ * CheckDate is a program that reads a line of input and determine whether or
+ * not it is a valid date between the years 1753 and 3000.
+ * 
+ * The program has different methods for checking whether the input is valid or
+ * not starting from the method isValidString, to isValidDay, isValidYear and
+ * isValidMonth. If at any point one of the methods returns false the program
+ * prints out the date as invalid.
+ * 
+ * @author Hamzah Alansi
+ */
+
 public class CheckDate {
     public static int month = 0;
     public static int day = 0;

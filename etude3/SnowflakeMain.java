@@ -11,7 +11,7 @@ public class SnowflakeMain {
         JFrame frame = new JFrame("Drawing Program");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ImagePanel panel = new ImagePanel(500);
+        ImagePanel panel = new ImagePanel();
 
         // Create the spinner
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));

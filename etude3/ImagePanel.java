@@ -19,13 +19,13 @@ public class ImagePanel extends JPanel {
   private static final double ANGLE = Math.toRadians(60);
   private static final double SCALE_FACTOR = 1.0 / 3.0;
 
-  private int panelSize;
+  // private int panelSize;
   private int levels = 1;
   // private double zoomFactor = 1.0;
 
-  public ImagePanel(int panelSize) {
-    this.panelSize = panelSize;
-    setPreferredSize(new Dimension(panelSize, panelSize));
+  public ImagePanel() {
+    // this.panelSize = panelSize;
+    setPreferredSize(new Dimension(300, 300));
     // levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the
     // Koch Snowflake"));
     // addMouseWheelListener(this);
@@ -36,18 +36,24 @@ public class ImagePanel extends JPanel {
     super.paintComponent(g);
     g.setColor(Color.BLACK);
 
-    // int centerX = getWidth() / 2;
-    // int centerY = getHeight() / 2;
+    int centerX = getWidth() / 2;
+    int centerY = getHeight() / 2;
 
-    // int side = (int) (panelSize / zoomFactor);
+    int side = Math.min(getWidth(), getHeight());
 
-    // Point p1 = new Point(centerX, centerY - side / 2);
-    // Point p2 = new Point(centerX + side / 2, centerY + side / 2);
-    // Point p3 = new Point(centerX - side / 2, centerY + side / 2);
+    double x1 = centerX - side / 2;
+    double y1 = centerY + side / 3 * Math.sqrt(3);
+    double x5 = centerX + side / 2;
+    double y5 = y1;
 
-    drawKochSnowflake(g, levels, 20 * 2, 280 * 2, 280 * 2, 280 * 2);
-    drawKochSnowflake(g, levels, 280 * 2, 280 * 2, 150 * 2, 20 * 2);
-    drawKochSnowflake(g, levels, 150 * 2, 20 * 2, 20 * 2, 280 * 2);
+    System.out.println(x1 + "; " + y1 + "; " + x5 + "; " + y5);
+    drawKochSnowflake(g, levels, x1, y1, y1, y5);
+    drawKochSnowflake(g, levels, y1, y1, x5, x1);
+    drawKochSnowflake(g, levels, x5, x1, x1, y1);
+
+    // drawKochSnowflake(g, levels, 20 * 2, 280 * 2, 280 * 2, 280 * 2);
+    // drawKochSnowflake(g, levels, 280 * 2, 280 * 2, 150 * 2, 20 * 2);
+    // drawKochSnowflake(g, levels, 150 * 2, 20 * 2, 20 * 2, 280 * 2);
 
   }
 
