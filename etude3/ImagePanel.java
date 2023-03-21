@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
 
-  private static final double ANGLE = Math.toRadians(60);
-  private static final double SCALE_FACTOR = 1.0 / 3.0;
+  // private static final double ANGLE = Math.toRadians(60);
+  // private static final double SCALE_FACTOR = 1.0 / 3.0;
 
   // private int panelSize;
   private int levels = 1;
@@ -25,7 +25,7 @@ public class ImagePanel extends JPanel {
 
   public ImagePanel() {
     // this.panelSize = panelSize;
-    setPreferredSize(new Dimension(300, 300));
+    setPreferredSize(new Dimension(500, 500));
     // levels = Integer.parseInt(JOptionPane.showInputDialog("Enter the level of the
     // Koch Snowflake"));
     // addMouseWheelListener(this);
@@ -36,24 +36,23 @@ public class ImagePanel extends JPanel {
     super.paintComponent(g);
     g.setColor(Color.BLACK);
 
-    int centerX = getWidth() / 2;
-    int centerY = getHeight() / 2;
+    int panelWidth = getWidth();
+    int panelHeight = getHeight();
+    int ratio = panelHeight / panelWidth;
+    int centerX = panelWidth / 2;
+    int centerY = panelHeight / 2;
+    int sideLength = Math.min(panelWidth, panelHeight) - 40;
+    int startX = centerX - sideLength / 2;
+    int startY = centerY - sideLength / 2;
 
-    int side = Math.min(getWidth(), getHeight());
-
-    double x1 = centerX - side / 2;
-    double y1 = centerY + side / 3 * Math.sqrt(3);
-    double x5 = centerX + side / 2;
-    double y5 = y1;
-
-    System.out.println(x1 + "; " + y1 + "; " + x5 + "; " + y5);
-    drawKochSnowflake(g, levels, x1, y1, y1, y5);
-    drawKochSnowflake(g, levels, y1, y1, x5, x1);
-    drawKochSnowflake(g, levels, x5, x1, x1, y1);
-
-    // drawKochSnowflake(g, levels, 20 * 2, 280 * 2, 280 * 2, 280 * 2);
-    // drawKochSnowflake(g, levels, 280 * 2, 280 * 2, 150 * 2, 20 * 2);
-    // drawKochSnowflake(g, levels, 150 * 2, 20 * 2, 20 * 2, 280 * 2);
+    // drawKochSnowflake(g, levels, startX, startY, startX + sideLength, startY);
+    // drawKochSnowflake(g, levels, startX + sideLength, startY, centerX, startY +
+    // sideLength);
+    // drawKochSnowflake(g, levels, centerX, startY + sideLength, startX, startY);
+    System.out.println(startX + "; " + startY + "; " + centerX + "; " + centerY + "; " + sideLength);
+    drawKochSnowflake(g, levels, startY, centerY, centerY, centerY);
+    drawKochSnowflake(g, levels, centerY, centerY, startX, startY);
+    drawKochSnowflake(g, levels, startX, startY, startY, centerY);
 
   }
 
@@ -86,15 +85,4 @@ public class ImagePanel extends JPanel {
     this.levels = level;
     repaint();
   }
-
-  // @Override
-  // public void mouseWheelMoved(MouseWheelEvent e) {
-  // int notches = e.getWheelRotation();
-  // if (notches < 0) {
-  // zoomFactor *= 1.1;
-  // } else {
-  // zoomFactor /= 1.1;
-  // }
-  // repaint();
-  // }
 }
