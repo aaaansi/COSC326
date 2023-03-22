@@ -36,23 +36,21 @@ public class ImagePanel extends JPanel {
     super.paintComponent(g);
     g.setColor(Color.BLACK);
 
-    int panelWidth = getWidth();
-    int panelHeight = getHeight();
-    int ratio = panelHeight / panelWidth;
-    int centerX = panelWidth / 2;
-    int centerY = panelHeight / 2;
-    int sideLength = Math.min(panelWidth, panelHeight) - 40;
-    int startX = centerX - sideLength / 2;
-    int startY = centerY - sideLength / 2;
+    double panelWidth = getWidth();
+    double panelHeight = getHeight();
+    double ratio = panelHeight / panelWidth;
+    double centerX = panelWidth / 2;
+    double centerY = panelHeight / 2;
+    double sideLength = Math.min(panelWidth, panelHeight) - 40;
+    double startX = centerX - sideLength / 2;
+    double startY = centerY - sideLength / 2;
 
-    // drawKochSnowflake(g, levels, startX, startY, startX + sideLength, startY);
-    // drawKochSnowflake(g, levels, startX + sideLength, startY, centerX, startY +
-    // sideLength);
-    // drawKochSnowflake(g, levels, centerX, startY + sideLength, startX, startY);
+    System.out.println(panelWidth + "---" + panelHeight);
     System.out.println(startX + "; " + startY + "; " + centerX + "; " + centerY + "; " + sideLength);
-    drawKochSnowflake(g, levels, startY, centerY, centerY, centerY);
-    drawKochSnowflake(g, levels, centerY, centerY, startX, startY);
-    drawKochSnowflake(g, levels, startX, startY, startY, centerY);
+
+    drawKochSnowflake(g, levels, panelWidth / 2 - 200, panelHeight / 2, panelWidth / 2, panelHeight / 2);
+    drawKochSnowflake(g, levels, panelWidth / 2, panelHeight / 2, panelWidth / 2 - 100, panelHeight / panelWidth);
+    drawKochSnowflake(g, levels, panelWidth / 2 - 100, panelHeight / panelWidth, panelWidth / 2 - 200, panelHeight / 2);
 
   }
 
