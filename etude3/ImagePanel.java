@@ -47,10 +47,15 @@ public class ImagePanel extends JPanel {
 
     System.out.println(panelWidth + "---" + panelHeight);
     System.out.println(startX + "; " + startY + "; " + centerX + "; " + centerY + "; " + sideLength);
+    System.out.println(panelWidth / 2 + ((panelWidth / 2) - 50));
+    System.out.println(panelWidth / 2 - ((panelWidth / 2) - 50));
 
-    drawKochSnowflake(g, levels, panelWidth / 2 - 200, panelHeight / 2, panelWidth / 2, panelHeight / 2);
-    drawKochSnowflake(g, levels, panelWidth / 2, panelHeight / 2, panelWidth / 2 - 100, panelHeight / panelWidth);
-    drawKochSnowflake(g, levels, panelWidth / 2 - 100, panelHeight / panelWidth, panelWidth / 2 - 200, panelHeight / 2);
+    drawKochSnowflake(g, levels, panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2,
+        panelWidth / 2 + ((panelWidth / 2) - 50), panelHeight / 2);
+    drawKochSnowflake(g, levels, panelWidth / 2 + ((panelWidth / 2) - 50),
+        panelHeight / 2, panelWidth / 2, panelHeight / panelWidth);
+    drawKochSnowflake(g, levels, panelWidth / 2, panelHeight / panelWidth,
+        panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2);
 
   }
 
