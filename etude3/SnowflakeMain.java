@@ -34,23 +34,3 @@ public class SnowflakeMain {
         frame.setVisible(true);
     }
 }
-
-// double centerX = getWidth() / 2;
-// double centerY = getHeight() / 2;
-
-// double side = Math.min(getWidth(), getHeight());
-
-// double x1 = centerX - side / 2;
-// double y1 = centerY + side / 3 * Math.sqrt(3);
-// double x5 = centerX + side / 2;
-// double y5 = y1;
-
-// System.out.println(x1 + "; " + y1 + "; " + x5 + "; " + y5);
-
-// drawKochSnowflake(g, levels, x1, y1, x5, y1);
-// drawKochSnowflake(g, levels, x1, y1, x5, y1);
-// drawKochSnowflake(g, levels, x1, y1, x5, y1);
-
-// drawKochSnowflake(g, levels, 20 * 2, 280 * 2, 280 * 2, 280 * 2);
-// drawKochSnowflake(g, levels, 280 * 2, 280 * 2, 150 * 2, 20 * 2);
-// drawKochSnowflake(g, levels, 150 * 2, 20 * 2, 20 * 2, 280 * 2);
