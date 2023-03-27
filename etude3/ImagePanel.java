@@ -11,6 +11,10 @@ import javax.swing.event.MouseInputListener;
 /**
  * https://medium.com/@mojca.rojko/drawing-a-koch-snowflake-in-java-3268cbed94c8
  * Algorithm for drawing the snowflake from ^^
+ * 
+ * 
+ * https://stackoverflow.com/questions/6543453/zooming-in-and-zooming-out-within-a-panel
+ * for zooming in && out
  */
 
 public class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
@@ -74,10 +78,10 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
       }
 
     }
-    // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-    // RenderingHints.VALUE_ANTIALIAS_ON);
-    // g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
-    // RenderingHints.VALUE_STROKE_PURE);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+    g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+        RenderingHints.VALUE_STROKE_PURE);
 
     drawKochSnowflake(g2d, levels, panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2,
         panelWidth / 2 + ((panelWidth / 2) - 50), panelHeight / 2);
