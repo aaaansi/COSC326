@@ -6,21 +6,25 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.*;
 import javax.swing.JPanel;
-import javax.swing.event.MouseInputListener;
 
 /**
+ * ImagePanel class is a class that deals with drawing the Koch Snowflake
+ * 
+ * References:
+ * Algorithm for drawing the snowflake from:
  * https://medium.com/@mojca.rojko/drawing-a-koch-snowflake-in-java-3268cbed94c8
- * Algorithm for drawing the snowflake from ^^
- * 
- * 
+ *
+ * Functions for Zoom in/out from:
  * https://stackoverflow.com/questions/6543453/zooming-in-and-zooming-out-within-a-panel
- * for zooming in && out
+ * 
+ * @author Hamzah Alansi
  */
 
 public class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
 
   private int levels = 1;
 
+  // datafields for Zoom functions
   private double zoomFactor = 1;
   private double prevZoomFactor = 1;
   private boolean zoomer;
@@ -32,6 +36,10 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
   private int yDiff;
   private Point startPoint;
 
+  /**
+   * ImagePanel constructor that sets the size of the panel with
+   * specific dimensions and adds MouseListeners
+   */
   public ImagePanel() {
     setPreferredSize(new Dimension(345, 429));
     addMouseWheelListener(this);
@@ -39,6 +47,11 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     addMouseListener(this);
   }
 
+  /**
+   * PaintComponent method that takes a Graphics parameter g
+   * and sets the dimensions of the triangle then calls the drawKochSnowflake
+   * method to draw.
+   */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -47,6 +60,8 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
 
     double panelWidth = getWidth();
     double panelHeight = getHeight();
+
+    // If user zoomes
     if (zoomer) {
       AffineTransform at = new AffineTransform();
 
@@ -65,12 +80,14 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
       zoomer = false;
     }
 
+    // if the user drags
     if (dragger) {
       AffineTransform at = new AffineTransform();
       at.translate(xOffset + xDiff, yOffset + yDiff);
       at.scale(zoomFactor, zoomFactor);
       g2d.transform(at);
 
+      // if the user releases the mouse
       if (released) {
         xOffset += xDiff;
         yOffset += yDiff;
@@ -78,11 +95,16 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
       }
 
     }
+    // Antialiasing to smooth out the pixels of the triangle
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
     g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
         RenderingHints.VALUE_STROKE_PURE);
 
+    /*
+     * Method calls to drawKochSnowflake to draw the lines of the triangle. each
+     * method call draws one line.
+     */
     drawKochSnowflake(g2d, levels, panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2,
         panelWidth / 2 + ((panelWidth / 2) - 50), panelHeight / 2);
     drawKochSnowflake(g2d, levels, panelWidth / 2 + ((panelWidth / 2) - 50),
@@ -92,19 +114,21 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
 
   }
 
-  public static double distance(double x1, double y1, double x2, double y2) {
-    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-  }
+  /*
+   * drawKochSnowflake method is a method that takes 6 parameters the
+   * paintComponents graphic, the level, and the line coordinates of the drawing
+   * (x1,y1), (xy, y5).
+   * This method recursively calls itself if the level order is greater than 1 to
+   * redraw itself to form a snowflake.
+   */
 
   private void drawKochSnowflake(Graphics2D g, int lev, double x1, double y1, double x5, double y5) {
     double deltaX, deltaY, x2, y2, x3, y3, x4, y4;
-    // Graphics2D g2d = (Graphics2D) g;
     if (lev == 1) {
       for (int i = 0; i < 3; i++) {
         g.draw(new Line2D.Double(x1, y1, x5, y5));
       }
-      // g.drawLine((int) Math.round(x1), (int) Math.round(y1), (int) Math.round(x5),
-      // (int) Math.round(y5));
+
     } else {
       deltaX = x5 - x1;
       deltaY = y5 - y1;
@@ -118,6 +142,7 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
       x4 = x1 + 2 * deltaX / 3;
       y4 = y1 + 2 * deltaY / 3;
 
+      // recursive call with new calculated coordinates
       drawKochSnowflake(g, lev - 1, x1, y1, x2, y2);
       drawKochSnowflake(g, lev - 1, x2, y2, x3, y3);
       drawKochSnowflake(g, lev - 1, x3, y3, x4, y4);
@@ -125,11 +150,19 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     }
   }
 
+  /*
+   * setLevels method takes a single parameter, level and repaints
+   * the Snowflake by updating the order of the snowflake.
+   */
   public void setLevels(int level) {
     this.levels = level;
     repaint();
   }
 
+  /*
+   * Method that checks if the mousewheel is rotating. if it is then repaint the
+   * image with the zoom factor
+   */
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
 
@@ -147,6 +180,10 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     }
   }
 
+  /*
+   * Method that Checks if the mouse is dragged to move the zoomed image on the
+   * frame.
+   */
   @Override
   public void mouseDragged(MouseEvent e) {
     Point curPoint = e.getLocationOnScreen();
@@ -167,12 +204,22 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
 
   }
 
+  /**
+   * mousePressed method that takes a MouseEvent parameter
+   * and checks if the mouse is pressed set released to false then updates the
+   * startPoint value.
+   */
+
   @Override
   public void mousePressed(MouseEvent e) {
     released = false;
     startPoint = MouseInfo.getPointerInfo().getLocation();
   }
 
+  /**
+   * mouseReleased method that takes a MouseEvent parameter
+   * and checks if the mouse is released (True) and repaints it.
+   */
   @Override
   public void mouseReleased(MouseEvent e) {
     released = true;

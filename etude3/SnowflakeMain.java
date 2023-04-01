@@ -5,6 +5,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ * SnowflakeMain class is a main class that is used to run ImagePanel from.
+ * It creates a Jframe and adds the ImagePanel class to it as well as the
+ * spinner for changing levels.
+ * 
+ * @author Hamzah Alansi
+ */
 public class SnowflakeMain {
 
     public static void main(String[] args) {
@@ -23,10 +30,11 @@ public class SnowflakeMain {
                 panel.repaint();
             }
         });
-
+        // Panel for spinner
         JPanel controlPanel = new JPanel();
         controlPanel.add(spinner);
 
+        // Adds ImagePanel and Spinner panel to the frame.
         frame.add(panel);
         frame.add(controlPanel, "North");
 
