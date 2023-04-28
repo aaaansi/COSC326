@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigInteger;
 import java.util.Scanner;
 
 /**
@@ -23,6 +24,8 @@ public class CheckDate {
     public static String dayStr = "";
     public static String yearStr = "";
     public static String dateString = "";
+    private static final int MIN_YEAR = 1753;
+    private static final int MAX_YEAR = 3000;
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner scan = null;
@@ -53,7 +56,7 @@ public class CheckDate {
 
                 if (initialInput.charAt(0) == ' ' || initialInput.charAt(initialInput.length() - 1) == ' ') {
                     System.out.println(initialInput + " - INVALID");
-                } else if (isValidDay(dayStr) && isValidYear(yearStr) && isValidMonth(monthStr)) {
+                } else if (isValidDay(dayStr) == -1 && isValidYear(yearStr) && isValidMonth(monthStr)) {
                     System.out.println(toString(day + " " + month + " " + year));
                 } else {
                     System.out.println(initialInput + " - INVALID");
@@ -62,6 +65,7 @@ public class CheckDate {
 
             } else {
                 System.out.println(initialInput + " - INVALID");
+                // BigInteger
             }
 
         }
@@ -95,21 +99,22 @@ public class CheckDate {
         // return true;
     }
 
-    public static boolean isValidDay(String dayDate) {
-        // int day = 0;
+    public static int isValidDay(String dayDate) {
+        int day = 0;
         try {
-
             if (dayDate.length() > 2) {
-                return false;
+                day = -1;
+                return day;
             }
             day = Integer.parseInt(dayDate);
             if (day > 31 || day < 1) {
-                return false;
+                day = -1;
+                return day;
             }
-            return true;
+            return day;
         } catch (NumberFormatException nfe) {
-            // System.out.println(dayDate + " - INVALID day");
-            return false;
+            day = -1;
+            return day;
         }
     }
 
@@ -240,7 +245,7 @@ public class CheckDate {
 
                     }
                 }
-                if (year < 1753 || year > 3000) {
+                if (year < MIN_YEAR || year > MAX_YEAR) {
                     System.err.print("Year out of range \t");
                     return false;
                 }
@@ -259,7 +264,7 @@ public class CheckDate {
 
                     }
                 }
-                if (year < 1753 || year > 3000) {
+                if (year < MIN_YEAR || year > MAX_YEAR) {
                     System.err.print("Year out of range \t");
                     return false;
                 }

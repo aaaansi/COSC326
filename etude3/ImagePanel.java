@@ -108,8 +108,8 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     drawKochSnowflake(g2d, levels, panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2,
         panelWidth / 2 + ((panelWidth / 2) - 50), panelHeight / 2);
     drawKochSnowflake(g2d, levels, panelWidth / 2 + ((panelWidth / 2) - 50),
-        panelHeight / 2, panelWidth / 2, panelHeight / panelWidth);
-    drawKochSnowflake(g2d, levels, panelWidth / 2, panelHeight / panelWidth,
+        panelHeight / 2, panelWidth / 2, panelHeight / ((panelWidth / 2) - 50));
+    drawKochSnowflake(g2d, levels, panelWidth / 2, panelHeight / ((panelWidth / 2) - 50),
         panelWidth / 2 - ((panelWidth / 2) - 50), panelHeight / 2);
 
   }
