@@ -1,0 +1,10 @@
+Removed duplicate #include <stdio.h> statement
+Removed unnecessary #include <stdio.h> and #include <string.h> statements
+Changed int phone to long phone to avoid overflow
+Initialized variables i, j, and count to 0
+Changed the for loop in main() from for (i = 0; i < 50; i++) to for (i = 0; i < 100; i++) to match the allocated size of ss
+Moved the allocation of s inside the for loop in main() to create a new instance of s for each iteration
+Changed the fscanf() call to remove the address-of operator (&) from the arguments
+Changed the allocation size of ss from 100 * sizeof(struct S **) to 100 * sizeof(struct S *) to match the intended type
+Changed the comparison operators == in the ffn(), fln(), fem(), and fph() functions to strcmp() to compare strings
+Added a break statement at the end of the case 4 block in the switch statement
