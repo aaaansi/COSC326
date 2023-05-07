@@ -4,8 +4,7 @@ import json
 import webbrowser
 
 # Read coordinates from stdin
-lon, lat = map(float, input(
-    "Enter comma-separated longitude and latitude: ").split(","))
+lon, lat = map(float, input("Enter comma-separated longitude and latitude: ").split(","))
 
 # Create GeoJSON feature with the input coordinates
 data1 = {
