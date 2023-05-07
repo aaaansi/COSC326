@@ -1,5 +1,8 @@
 Removed duplicate #include <stdio.h> statement
 Removed unnecessary #include <stdio.h> and #include <string.h> statements
+Changed struct name "S" to ease readability from S to something more meaningful like "Customer"
+Changed struct to typedef so I can give it a pointer that I can simply declare variables with for example "Customer cust;" instead of "struct Customer *cust;" 
+Misspelling for words like "emialAddress" to "emailAddress".
 Changed int phone to long phone to avoid overflow
 Initialized variables i, j, and count to 0
 Changed the for loop in main() from for (i = 0; i < 50; i++) to for (i = 0; i < 100; i++) to match the allocated size of ss

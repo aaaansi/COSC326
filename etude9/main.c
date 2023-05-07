@@ -1,20 +1,19 @@
-#include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 
-struct S
+struct Customer
 {
     char *firstName;
     char *lastName;
-    int phone;
-    char *emialAddress;
+    std::string phone;
+    char *emailAddress;
 };
 
 static int i, j;
 static int count;
-// sorts the array of pointers to "S" structures by first name in alphabetical order.
-void sfn(struct S **ss)
+// sorts the array of pointers to "Customer" structures by first name in alphabetical order.
+void sfn(struct Customer **ss)
 {
     for (i = 0; i < count; i++)
         for (j = 0; j < count; j++)
@@ -22,16 +21,16 @@ void sfn(struct S **ss)
                 ss[i] = ss[j];
     ss[j] = ss[i];
 }
-// finds whether a particular first name exists in the array of pointers to "S" structures.
-int ffn(struct S **ss, char *s)
+// finds whether a particular first name exists in the array of pointers to "Customer" structures.
+int ffn(struct Customer **ss, char *s)
 {
     while (++i < count)
         if (ss[i]->firstName == s)
             return 1;
     return 0;
 }
-// sorts the array of pointers to "S" structures by last name in alphabetical order.
-void sln(struct S **ss)
+// sorts the array of pointers to "Customer" structures by last name in alphabetical order.
+void sln(struct Customer **ss)
 {
     for (i = 0; i < count; i++)
         for (j = 0; j < count; j++)
@@ -39,8 +38,8 @@ void sln(struct S **ss)
                 ss[i] = ss[j];
     ss[j] = ss[i];
 }
-// finds whether a particular last name exists in the array of pointers to "S" structures.
-int fln(struct S **ss, char *s)
+// finds whether a particular last name exists in the array of pointers to "Customer" structures.
+int fln(struct Customer **ss, char *s)
 {
     while (++i < count)
     {
@@ -49,34 +48,34 @@ int fln(struct S **ss, char *s)
     }
     return 0;
 }
-// sorts the array of pointers to "S" structures by email address in alphabetical order.
-void sem(struct S **ss)
+// sorts the array of pointers to "Customer" structures by email address in alphabetical order.
+void sem(struct Customer **ss)
 {
     for (i = 0; i < count; i++)
     {
         for (j = 0; j < count; j++)
         {
-            if (ss[i]->emialAddress > ss[j]->emialAddress)
+            if (ss[i]->emailAddress > ss[j]->emailAddress)
             {
-                struct S *s = ss[i];
+                struct Customer *s = ss[i];
                 ss[j] = ss[i];
                 ss[j] = s;
             }
         }
     }
 }
-// finds whether a particular email address exists in the array of pointers to "S" structures.
-int fem(struct S **ss, char *s)
+// finds whether a particular email address exists in the array of pointers to "Customer" structures.
+int fem(struct Customer **ss, char *s)
 {
     while (++i < count)
     {
-        if (ss[i]->emialAddress == s)
+        if (ss[i]->emailAddress == s)
             return 1;
     }
     return 0;
 }
-// sorts the array of pointers to "S" structures by phone number in numerical order.
-void sph(struct S **ss)
+// sorts the array of pointers to "Customer" structures by phone number in numerical order.
+void sph(struct Customer **ss)
 {
     for (; i < count; i++)
     {
@@ -84,15 +83,15 @@ void sph(struct S **ss)
         {
             if (ss[i]->phone > ss[j]->phone)
             {
-                struct S *s = ss[i];
+                struct Customer *s = ss[i];
                 ss[i] = ss[j];
                 ss[j] = s;
             }
         }
     }
 }
-// finds whether a particular phone number exists in the array of pointers to "S" structures.
-int fph(struct S **ss, int s)
+// finds whether a particular phone number exists in the array of pointers to "Customer" structures.
+int fph(struct Customer **ss, int s)
 {
     while (++i < count)
     {
@@ -101,15 +100,15 @@ int fph(struct S **ss, int s)
     }
     return 0;
 }
-// The main function reads input data from a file specified in the command line arguments, stores it in an array of pointers to "S" structures, and allows the user to search for specific entries using one of the above-mentioned criteria. The program uses a switch statement to execute the selected operation and displays the result of the operation to the user. The program continues until the user enters the value "0" to exit.
+// The main function reads input data from a file specified in the command line arguments, stores it in an array of pointers to "Customer" structures, and allows the user to search for specific entries using one of the above-mentioned criteria. The program uses a switch statement to execute the selected operation and displays the result of the operation to the user. The program continues until the user enters the value "0" to exit.
 int main(int argc, char **argv)
 {
     int i;
     int count = 0;
     char buffer[10];
 
-    struct S **ss = (struct S **)malloc(100 * sizeof(struct S **));
-    struct S *s = malloc(sizeof(*s));
+    struct Customer **ss = (struct Customer **)malloc(100 * sizeof(struct Customer **));
+    struct Customer *s = malloc(sizeof(*s));
 
     FILE *f = fopen(argv[1], "r");
 
@@ -118,9 +117,9 @@ int main(int argc, char **argv)
 
         s->firstName = (char *)malloc(80 * sizeof(s->firstName[0]));
         s->lastName = (char *)malloc(80 * sizeof(s->firstName[0]));
-        s->emialAddress = (char *)malloc(80 * sizeof(s->firstName[0]));
+        s->emailAddress = (char *)malloc(80 * sizeof(s->firstName[0]));
 
-        fscanf(f, "%s %s %d %s", &s->firstName, &s->lastName, &s->phone, &s->emialAddress);
+        fscanf(f, "%s %s %d %s", &s->firstName, &s->lastName, &s->phone, &s->emailAddress);
 
         ss[count] = s;
         count += 1;
