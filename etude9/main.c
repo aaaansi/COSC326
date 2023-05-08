@@ -1,20 +1,20 @@
 #include <math.h>
 #include <stdlib.h>
-#include <string>
+#include <stdio.h>
+#include <string.h>
 
 struct Customer
 {
     char *firstName;
     char *lastName;
-    std::string phone;
+    char *phone;
     char *emailAddress;
 };
 
-static int i, j;
-static int count;
 // sorts the array of pointers to "Customer" structures by first name in alphabetical order.
-void sfn(struct Customer **ss)
+void sortFirstName(struct Customer **ss)
 {
+    int i, j, count;
     for (i = 0; i < count; i++)
         for (j = 0; j < count; j++)
             if (ss[i]->firstName > ss[j]->firstName)
@@ -22,16 +22,18 @@ void sfn(struct Customer **ss)
     ss[j] = ss[i];
 }
 // finds whether a particular first name exists in the array of pointers to "Customer" structures.
-int ffn(struct Customer **ss, char *s)
+int findFirstName(struct Customer **ss, char *s)
 {
+    int i, count;
     while (++i < count)
-        if (ss[i]->firstName == s)
+        if (strcmp(ss[i]->firstName, s))
             return 1;
     return 0;
 }
 // sorts the array of pointers to "Customer" structures by last name in alphabetical order.
-void sln(struct Customer **ss)
+void sortLastName(struct Customer **ss)
 {
+    int i, j, count;
     for (i = 0; i < count; i++)
         for (j = 0; j < count; j++)
             if (ss[i]->lastName > ss[j]->lastName)
@@ -39,18 +41,20 @@ void sln(struct Customer **ss)
     ss[j] = ss[i];
 }
 // finds whether a particular last name exists in the array of pointers to "Customer" structures.
-int fln(struct Customer **ss, char *s)
+int findLastName(struct Customer **ss, char *s)
 {
+    int i, count;
     while (++i < count)
     {
-        if (ss[i]->lastName == s)
+        if (strcmp(ss[i]->lastName, s))
             return 1;
     }
     return 0;
 }
 // sorts the array of pointers to "Customer" structures by email address in alphabetical order.
-void sem(struct Customer **ss)
+void sortEmail(struct Customer **ss)
 {
+    int i, j, count;
     for (i = 0; i < count; i++)
     {
         for (j = 0; j < count; j++)
@@ -65,21 +69,23 @@ void sem(struct Customer **ss)
     }
 }
 // finds whether a particular email address exists in the array of pointers to "Customer" structures.
-int fem(struct Customer **ss, char *s)
+int findEmail(struct Customer **ss, char *s)
 {
+    int i, count;
     while (++i < count)
     {
-        if (ss[i]->emailAddress == s)
+        if (strcmp(ss[i]->emailAddress, s))
             return 1;
     }
     return 0;
 }
 // sorts the array of pointers to "Customer" structures by phone number in numerical order.
-void sph(struct Customer **ss)
+void sortPhoneNumber(struct Customer **ss)
 {
-    for (; i < count; i++)
+    int i, j, count;
+    for (i = 0; i < count; i++)
     {
-        for (; j < count; j++)
+        for (j = 0; j < count; j++)
         {
             if (ss[i]->phone > ss[j]->phone)
             {
@@ -91,11 +97,12 @@ void sph(struct Customer **ss)
     }
 }
 // finds whether a particular phone number exists in the array of pointers to "Customer" structures.
-int fph(struct Customer **ss, int s)
+int findPhoneNumber(struct Customer **ss, char *s)
 {
+    int i, count;
     while (++i < count)
     {
-        if (ss[i]->phone == s)
+        if (strcmp(ss[i]->phone, s))
             return 1;
     }
     return 0;
@@ -110,9 +117,10 @@ int main(int argc, char **argv)
     struct Customer **ss = (struct Customer **)malloc(100 * sizeof(struct Customer **));
     struct Customer *s = malloc(sizeof(*s));
 
-    FILE *f = fopen(argv[1], "r");
+    FILE *f;
+    f = fopen(argv[1], "r");
 
-    for (i = 0; i < 50; i++)
+    for (i = 0; i < 100; i++)
     {
 
         s->firstName = (char *)malloc(80 * sizeof(s->firstName[0]));
@@ -128,35 +136,36 @@ int main(int argc, char **argv)
             while (command != 0)
             {
                 char *val = malloc(100 * sizeof(val[0]));
-                gets(buffer);
+                fgets(buffer, 20, f);
                 command = atoi(buffer);
-                gets(buffer);
+                fgets(buffer, 20, f);
                 strcpy(val, buffer);
                 switch (command)
                 {
                 case 1:
                     printf("looking for email %s\n", val);
-                    sem(ss);
-                    printf("found it? %d\n", fem(ss, val));
+                    sortEmail(ss);
+                    printf("found it? %d\n", findEmail(ss, val));
                     break;
                 case 2:
                     printf("looking for firstname %s\n", val);
-                    sfn(ss);
-                    printf("found it? %d\n", ffn(ss, val));
+                    sortFirstName(ss);
+                    printf("found it? %d\n", findFirstName(ss, val));
                     break;
                 case 3:
                     printf("looking for lasname %s\n", val);
-                    sln(ss);
-                    printf("found it? %d\n", fln(ss, val));
+                    sortLastName(ss);
+                    printf("found it? %d\n", findLastName(ss, val));
                     break;
                 case 4:
                     printf("looking for email %s\n", val);
-                    sph(ss);
-                    printf("found it? %d\n", fph(ss, atoi(val)));
+                    sortPhoneNumber(ss);
+                    printf("found it? %d\n", findPhoneNumber(ss, val));
                 default:
                     break;
                 }
             }
         }
     }
+    fclose(f);
 }
