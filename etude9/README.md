@@ -12,4 +12,4 @@
 - Note you must pass a txt file of clients which should be in the order of First name, last name, phone number, and emails for the program to produce the desired outputs.
 
 ## Report
-[Code Review](./report.pdf)
+[Code Review](./BugSquashingReport.pdf)
