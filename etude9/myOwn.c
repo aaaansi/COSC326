@@ -6,13 +6,6 @@
 #define MAX_FIELD_LEN 100
 #define MAX_LINE_LEN 256
 
-// The code defines a struct named "Client" with four fields: first_name, last_name, email, and phone. This struct requires additional memory allocation for each field, resulting in more lines of code.
-// The code uses the MAX_FIELD_LEN and MAX_LINE_LEN constants to define the maximum length of fields and lines, respectively. This ensures proper memory allocation and prevents buffer overflows.
-// The search_by_field function uses a while loop to read each line from the file. For each line, it allocates memory for the fields of the Client struct, parses the line using sscanf, converts the search value and client fields to lowercase, and performs the search based on the specified field. This involves multiple lines of code for string comparisons and memory management.
-// The main function handles command-line arguments, file opening, and error checking, which adds more lines of code for validation and error handling.
-// The code includes a loop for performing multiple searches based on user input. It prompts the user for search options, reads the search value, performs the search, and asks if another search is desired. This loop contributes to additional lines of code for user interaction and input validation.
-// The code includes memory deallocation using the free function for each field of the Client struct to prevent memory leaks.
-
 typedef struct
 {
     char *first_name;
@@ -21,6 +14,13 @@ typedef struct
     char *phone;
 } Client;
 
+/**
+ * Searches for clients in the file based on the given field and value.
+ *
+ * @param field The field to search (f - first name, l - last name, e - email, p - phone number).
+ * @param value The value to search for.
+ * @param fp The file pointer to the input file.
+ */
 void search_by_field(char field, char *value, FILE *fp)
 {
     char line[MAX_LINE_LEN];
@@ -29,6 +29,7 @@ void search_by_field(char field, char *value, FILE *fp)
 
     while (fgets(line, MAX_LINE_LEN, fp))
     {
+        // Dynamically allocate memory for client fields
         client.first_name = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
         client.last_name = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
         client.email = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
@@ -36,7 +37,7 @@ void search_by_field(char field, char *value, FILE *fp)
 
         sscanf(line, "%s %s %s %s", client.first_name, client.last_name, client.phone, client.email);
 
-        // Convert the search value and client field to lowercase
+        // Convert the search value and client field to lowercase for case-insensitive comparison
         char lower_value[MAX_FIELD_LEN];
         char lower_field[MAX_FIELD_LEN];
         strcpy(lower_value, value);
@@ -53,28 +54,28 @@ void search_by_field(char field, char *value, FILE *fp)
         switch (field)
         {
         case 'f':
-            if (strcasecmp(client.first_name, lower_value) == 0)
+            if (strcasecmp(client.first_name, lower_value) == 0) // Compare first name case-insensitively
             {
                 printf("%s", line);
                 found = 1;
             }
             break;
         case 'l':
-            if (strcasecmp(client.last_name, lower_value) == 0)
+            if (strcasecmp(client.last_name, lower_value) == 0) // Compare last name case-insensitively
             {
                 printf("%s", line);
                 found = 1;
             }
             break;
         case 'e':
-            if (strcasecmp(client.email, lower_value) == 0)
+            if (strcasecmp(client.email, lower_value) == 0) // Compare email case-insensitively
             {
                 printf("%s", line);
                 found = 1;
             }
             break;
         case 'p':
-            if (strcasecmp(client.phone, lower_value) == 0)
+            if (strcasecmp(client.phone, lower_value) == 0) // Compare phone number case-insensitively
             {
                 printf("%s", line);
                 found = 1;
@@ -82,6 +83,7 @@ void search_by_field(char field, char *value, FILE *fp)
             break;
         }
 
+        // Free the dynamically allocated memory for client fields
         free(client.first_name);
         free(client.last_name);
         free(client.email);
