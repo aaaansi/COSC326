@@ -1,116 +1,170 @@
-#include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-struct Customer
+#define MAX_FIELD_LEN 100
+#define MAX_LINE_LEN 256
+
+typedef struct
 {
-    char *firstName;
-    char *lastName;
+    char *first_name;
+    char *last_name;
+    char *email;
     char *phone;
-    char *emailAddress;
-};
+} Client;
 
-// finds whether a particular first name exists in the array of pointers to "Customer" structures.
-int findFirstName(struct Customer **ss, char *s)
+/**
+ * Searches for clients in the file based on the given field and value.
+ *
+ * @param field The field to search (f - first name, l - last name, e - email, p - phone number).
+ * @param value The value to search for.
+ * @param fp The file pointer to the input file.
+ */
+void search_by_field(char field, char *value, FILE *fp)
 {
-    int i, count;
-    while (++i < count)
-        if (strcmp(ss[i]->firstName, s))
-            return 1;
-    return 0;
-}
+    char line[MAX_LINE_LEN];
+    Client client;
+    int found = 0;
 
-// finds whether a particular last name exists in the array of pointers to "Customer" structures.
-int findLastName(struct Customer **ss, char *s)
-{
-    int i, count;
-    while (++i < count)
+    while (fgets(line, MAX_LINE_LEN, fp))
     {
-        if (strcmp(ss[i]->lastName, s))
-            return 1;
+        // Dynamically allocate memory for client fields
+        client.first_name = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
+        client.last_name = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
+        client.email = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
+        client.phone = (char *)malloc(MAX_FIELD_LEN * sizeof(char));
+
+        sscanf(line, "%s %s %s %s", client.first_name, client.last_name, client.phone, client.email);
+
+        // Convert the search value and client field to lowercase for case-insensitive comparison
+        char lower_value[MAX_FIELD_LEN];
+        char lower_field[MAX_FIELD_LEN];
+        strcpy(lower_value, value);
+        strcpy(lower_field, value);
+        for (int i = 0; lower_value[i]; i++)
+        {
+            lower_value[i] = tolower(lower_value[i]);
+        }
+        for (int i = 0; lower_field[i]; i++)
+        {
+            lower_field[i] = tolower(lower_field[i]);
+        }
+
+        switch (field)
+        {
+        case 'f':
+            if (strcasecmp(client.first_name, lower_value) == 0) // Compare first name case-insensitively
+            {
+                printf("%s", line);
+                found = 1;
+            }
+            break;
+        case 'l':
+            if (strcasecmp(client.last_name, lower_value) == 0) // Compare last name case-insensitively
+            {
+                printf("%s", line);
+                found = 1;
+            }
+            break;
+        case 'e':
+            if (strcasecmp(client.email, lower_value) == 0) // Compare email case-insensitively
+            {
+                printf("%s", line);
+                found = 1;
+            }
+            break;
+        case 'p':
+            if (strcasecmp(client.phone, lower_value) == 0) // Compare phone number case-insensitively
+            {
+                printf("%s", line);
+                found = 1;
+            }
+            break;
+        }
+
+        // Free the dynamically allocated memory for client fields
+        free(client.first_name);
+        free(client.last_name);
+        free(client.email);
+        free(client.phone);
     }
-    return 0;
+
+    if (!found)
+    {
+        printf("(Client does not exist)\n");
+    }
 }
 
-// finds whether a particular email address exists in the array of pointers to "Customer" structures.
-int findEmail(struct Customer **ss, char *s)
-{
-    int i, count;
-    while (++i < count)
-    {
-        if (strcmp(ss[i]->emailAddress, s))
-            return 1;
-    }
-    return 0;
-}
-
-// finds whether a particular phone number exists in the array of pointers to "Customer" structures.
-int findPhoneNumber(struct Customer **ss, char *s)
-{
-    int i, count;
-    while (++i < count)
-    {
-        if (strcmp(ss[i]->phone, s))
-            return 1;
-    }
-    return 0;
-}
-// The main function reads input data from a file specified in the command line arguments, stores it in an array of pointers to "Customer" structures, and allows the user to search for specific entries using one of the above-mentioned criteria. The program uses a switch statement to execute the selected operation and displays the result of the operation to the user. The program continues until the user enters the value "0" to exit.
 int main(int argc, char *argv[])
 {
-    int i;
-    int count = 0;
-    char buffer[10];
+    char *filename;
+    FILE *fp;
+    char search_field;
+    char search_value[MAX_FIELD_LEN];
 
-    struct Customer **ss = (struct Customer **)malloc(100 * sizeof(struct Customer **));
-    struct Customer *s = malloc(sizeof(*s));
-
-    FILE *f;
-    f = fopen(argv[1], "r");
-
-    for (i = 0; i < 100; i++)
+    if (argc != 2)
     {
-
-        s->firstName = (char *)malloc(80 * sizeof(s->firstName[0]));
-        s->lastName = (char *)malloc(80 * sizeof(s->firstName[0]));
-        s->emailAddress = (char *)malloc(80 * sizeof(s->firstName[0]));
-
-        fscanf(f, "%s %s %d %s", &s->firstName, &s->lastName, &s->phone, &s->emailAddress);
-
-        ss[count] = s;
-        count += 1;
-        {
-            int command = 10;
-            while (command != 0)
-            {
-                char *val = malloc(100 * sizeof(val[0]));
-                fgets(buffer, 20, f);
-                command = atoi(buffer);
-                fgets(buffer, 20, f);
-                strcpy(val, buffer);
-                switch (command)
-                {
-                case 1:
-                    printf("looking for email %s\n", val);
-                    printf("found it? %d\n", findEmail(ss, val));
-                    break;
-                case 2:
-                    printf("looking for firstname %s\n", val);
-                    printf("found it? %d\n", findFirstName(ss, val));
-                    break;
-                case 3:
-                    printf("looking for lasname %s\n", val);
-                    printf("found it? %d\n", findLastName(ss, val));
-                    break;
-                case 4:
-                    printf("looking for email %s\n", val);
-                    printf("found it? %d\n", findPhoneNumber(ss, val));
-                default:
-                    break;
-                }
-            }
-        }
+        printf("Usage: %s <filename>\n", argv[0]);
+        return 1;
     }
-    fclose(f);
+
+    filename = argv[1];
+    fp = fopen(filename, "r");
+    if (!fp)
+    {
+        printf("Error opening file %s\n", filename);
+        return 1;
+    }
+
+    int valid_input = 0;
+    while (!valid_input)
+    {
+        printf("Enter f to search by first name:\n"
+               "      l to search by last name:\n"
+               "      e to search by email:\n"
+               "      p to search by phone number:\n"
+               "      x to Exit:\n");
+        scanf(" %c", &search_field);
+
+        if (search_field == 'x')
+        {
+            printf("Exit Success!");
+            return 0;
+        }
+
+        printf("Enter search value: ");
+        scanf("%s", search_value);
+
+        // Convert the search value to lowercase
+        for (int i = 0; search_value[i]; i++)
+        {
+            search_value[i] = tolower(search_value[i]);
+        }
+
+        search_by_field(search_field, search_value, fp);
+
+        printf("\n");
+
+        // Prompt for another search if the input is invalid
+        printf("Do you want to perform another search? (y/n): ");
+        char choice[10];
+        scanf("%9s", choice);
+
+        if (tolower(choice[0]) != 'y')
+        {
+            valid_input = 1;
+        }
+
+        // Flush the input buffer
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+        {
+        }
+
+        fseek(fp, 0, SEEK_SET); // Reset the file pointer to the beginning of the file
+    }
+
+    fclose(fp);
+    return 0;
 }
