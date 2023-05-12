@@ -6,6 +6,13 @@
 #define MAX_FIELD_LEN 100
 #define MAX_LINE_LEN 256
 
+// The code defines a struct named "Client" with four fields: first_name, last_name, email, and phone. This struct requires additional memory allocation for each field, resulting in more lines of code.
+// The code uses the MAX_FIELD_LEN and MAX_LINE_LEN constants to define the maximum length of fields and lines, respectively. This ensures proper memory allocation and prevents buffer overflows.
+// The search_by_field function uses a while loop to read each line from the file. For each line, it allocates memory for the fields of the Client struct, parses the line using sscanf, converts the search value and client fields to lowercase, and performs the search based on the specified field. This involves multiple lines of code for string comparisons and memory management.
+// The main function handles command-line arguments, file opening, and error checking, which adds more lines of code for validation and error handling.
+// The code includes a loop for performing multiple searches based on user input. It prompts the user for search options, reads the search value, performs the search, and asks if another search is desired. This loop contributes to additional lines of code for user interaction and input validation.
+// The code includes memory deallocation using the free function for each field of the Client struct to prevent memory leaks.
+
 typedef struct
 {
     char *first_name;
