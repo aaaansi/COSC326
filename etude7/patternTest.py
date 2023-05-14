@@ -1,9 +1,4 @@
-import urllib
-from geojson import Feature, Point, FeatureCollection
-import json
-import webbrowser
 import re
-
 
 def identify_coordinate_type(coord_string):
     coord_string = coord_string.strip()  # Remove leading and trailing spaces
@@ -14,7 +9,7 @@ def identify_coordinate_type(coord_string):
     non_negative_lat_long_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?(?:[NS]|[SN]), [+-]?\d{1,3}(?:\.\d{1,6})?(?:[EW]|[WE])$'
     dms_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?(?:\'|"|″)?[NSEW]?$'
     ddm_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,2}(?:\.\d+)?\'?[NSEW]?$'
-    form_with_Label = r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
+    form_with_Label =  r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
 
     match = re.match(form_with_Label, coord_string)
     if match:
@@ -30,46 +25,32 @@ def identify_coordinate_type(coord_string):
         if label is None:
             label = "Null"
 
-        return True, latitude, longitude, label
+        return latitude, longitude, label
 
     if re.match(standard_form_regex, coord_string):
-        return True, None, None, None
+        return "Standard Form"
     elif re.match(standard_form_decimal_diff_regex, coord_string):
-        return True, None, None, None
+        return "Standard Form (Different Decimal Points)"
     elif re.match(standard_form_missing_comma_regex, coord_string):
-        return True, None, None, None
+        return "Standard Form (Missing Comma)"
     elif re.match(non_negative_lat_long_regex, coord_string):
-        return True, None, None, None
+        return "Non-Negative Lat/Long"
     elif re.match(dms_form_regex, coord_string):
-        return True, None, None, None
+        return "Degrees, Minutes, Seconds Form"
     elif re.match(ddm_form_regex, coord_string):
-        return True, None, None, None
+        return "Degrees and Decimal Minutes Form"
     else:
-        return False, None, None, None
-
+        return "Unknown"
 
 # Example usage
-coord_str = input("ENTER COORDINATE: ")
-result, lat, lon, name = identify_coordinate_type(coord_str)
-print(identify_coordinate_type(coord_str))
 
-if result:
-    # Create GeoJSON feature with the input coordinates
-    data1 = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [lon, lat]
-        },
-        "properties": {
-            "name": [name]
-        }
-    }
-    # Convert GeoJSON feature to JSON string and URL encode it
-    stringify = json.dumps(data1)
-    uriencoded = urllib.parse.quote(stringify)
-    # Construct URL and open it in browser
-    url = "http://geojson.io/#data=data:application/json," + uriencoded
-    webbrowser.open(url)
+coord_string = input("ENTER COORDINATE: ")
+result = identify_coordinate_type(coord_string)
+
+if isinstance(result, tuple):
+    latitude, longitude, label = result
+    print(f"Latitude: {latitude}")
+    print(f"Longitude: {longitude}")
+    print(f"Label: {label}")
 else:
-    print("Unable to process: " + coord_str)
+    print(f"The coordinate type is: {result}")
