@@ -13,7 +13,7 @@ def identify_coordinate_type(coord_string):
     standard_form_decimal_diff_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?, [+-]?\d{1,3}(?:\.\d+)?$'
     standard_form_missing_comma_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})? [+-]?\d{1,3}(?:\.\d{1,6})?$'
     non_negative_lat_long_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?(?:[NS]|[SN]), [+-]?\d{1,3}(?:\.\d{1,6})?(?:[EW]|[WE])?$'
-    dms_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?(?:\'|"|″)?[NSEW]?$'
+    dms_form_regex = r'^(-?\d+)°(\d+)\'(\d+(\.\d+)?)\"([NS]), (\d+)°(\d+)\'(\d+(\.\d+)?)\"([EW])(?: (.+))?'
     ddm_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,2}(?:\.\d+)?\'?[NSEW]?$'
     form_with_Label = r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
 
@@ -42,11 +42,26 @@ def identify_coordinate_type(coord_string):
     elif re.match(non_negative_lat_long_regex, coord_string):
         return None, None, None
     elif re.match(dms_form_regex, coord_string):
-        return None, None, None
+        match = re.match(dms_form_regex, coord_string)
+        latitude_deg = float(match.group(1))
+        latitude_min = float(match.group(2))
+        latitude_sec = float(match.group(3))
+        latitude_dir = match.group(5)
+        latitude = -(latitude_deg + latitude_min/60 + latitude_sec/3600) if latitude_dir == 'S' else (latitude_deg + latitude_min/60 + latitude_sec/3600)
+
+        longitude_deg = float(match.group(6))
+        longitude_min = float(match.group(7))
+        longitude_sec = float(match.group(8))
+        longitude_dir = match.group(10)
+        longitude = -(longitude_deg + longitude_min/60 + longitude_sec/3600) if longitude_dir == 'W' else (longitude_deg + longitude_min/60 + longitude_sec/3600)
+
+        label = match.group(11) if match.group(11) else 'Null'
+        
+        return latitude, longitude, label
     elif re.match(ddm_form_regex, coord_string):
         return None, None, None
     else:
-        print("Unable to process:",coord_string)
+        print("Unable to process: ", coord_string)
         return None, None, None
 
 

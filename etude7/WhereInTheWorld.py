@@ -1,8 +1,9 @@
+import re
+import json
 import urllib
 from geojson import Feature, Point, FeatureCollection
-import json
 import webbrowser
-import re
+import sys
 
 
 def identify_coordinate_type(coord_string):
@@ -11,8 +12,8 @@ def identify_coordinate_type(coord_string):
     standard_form_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?, [+-]?\d{1,3}(?:\.\d{1,6})?$'
     standard_form_decimal_diff_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?, [+-]?\d{1,3}(?:\.\d+)?$'
     standard_form_missing_comma_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})? [+-]?\d{1,3}(?:\.\d{1,6})?$'
-    non_negative_lat_long_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?(?:[NS]|[SN]), [+-]?\d{1,3}(?:\.\d{1,6})?(?:[EW]|[WE])$'
-    dms_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,3}(?:\.\d+)?(?:\'|"|″)?[NSEW]?$'
+    non_negative_lat_long_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?(?:[NS]|[SN]), [+-]?\d{1,3}(?:\.\d{1,6})?(?:[EW]|[WE])?$'
+    dms_form_regex = r'^(-?\d+)°(\d+)\'(\d+(\.\d+)?)\"([NS]), (\d+)°(\d+)\'(\d+(\.\d+)?)\"([EW])(?: (.+))?'
     ddm_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,2}(?:\.\d+)?\'?[NSEW]?$'
     form_with_Label = r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
 
@@ -30,46 +31,107 @@ def identify_coordinate_type(coord_string):
         if label is None:
             label = "Null"
 
-        return True, latitude, longitude, label
+        return latitude, longitude, label
 
     if re.match(standard_form_regex, coord_string):
-        return True, None, None, None
+        return None, None, None
     elif re.match(standard_form_decimal_diff_regex, coord_string):
-        return True, None, None, None
+        return None, None, None
     elif re.match(standard_form_missing_comma_regex, coord_string):
-        return True, None, None, None
+        return None, None, None
     elif re.match(non_negative_lat_long_regex, coord_string):
-        return True, None, None, None
+        return None, None, None
     elif re.match(dms_form_regex, coord_string):
-        return True, None, None, None
+        match = re.match(dms_form_regex, coord_string)
+        latitude_deg = float(match.group(1))
+        latitude_min = float(match.group(2))
+        latitude_sec = float(match.group(3))
+        latitude_dir = match.group(5)
+        latitude = -(latitude_deg + latitude_min/60 + latitude_sec /
+                     3600) if latitude_dir == 'S' else (latitude_deg + latitude_min/60 + latitude_sec/3600)
+
+        longitude_deg = float(match.group(6))
+        longitude_min = float(match.group(7))
+        longitude_sec = float(match.group(8))
+        longitude_dir = match.group(10)
+        longitude = -(longitude_deg + longitude_min/60 + longitude_sec /
+                      3600) if longitude_dir == 'W' else (longitude_deg + longitude_min/60 + longitude_sec/3600)
+
+        label = match.group(11) if match.group(11) else 'Null'
+
+        return latitude, longitude, label
     elif re.match(ddm_form_regex, coord_string):
-        return True, None, None, None
+        return None, None, None
     else:
-        return False, None, None, None
+        print("Unable to process: ", coord_string)
+        return None, None, None
 
 
 # Example usage
-coord_str = input("ENTER COORDINATE: ")
-result, lat, lon, name = identify_coordinate_type(coord_str)
-print(identify_coordinate_type(coord_str))
+coordinates = []
 
-if result:
-    # Create GeoJSON feature with the input coordinates
-    data1 = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Point",
-            "coordinates": [lon, lat]
-        },
-        "properties": {
-            "name": [name]
-        }
+try:
+    if len(sys.argv) > 1:  # Check if command-line arguments are provided
+        # Get the file path from the command-line argument
+        file_path = sys.argv[1]
+
+        # Example usage (continued)
+        with open(file_path, "r") as file:
+            for line in file:
+                coord_string = line.strip()
+                latitude, longitude, label = identify_coordinate_type(
+                    coord_string)
+                if latitude is not None:
+                    coordinates.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [longitude, latitude]
+                        },
+                        "properties": {
+                            "name": label
+                        }
+                    })
+    else:
+        while True:
+            try:
+                coord_string = input(
+                    "ENTER COORDINATE (or press Enter to finish): ")
+                if coord_string == "":
+                    break
+
+                latitude, longitude, label = identify_coordinate_type(
+                    coord_string)
+                if latitude is not None:
+                    coordinates.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [longitude, latitude]
+                        },
+                        "properties": {
+                            "name": label
+                        }
+                    })
+            except EOFError:
+                print(
+                    "Error: End of input reached. Make sure the input file is not empty.")
+                sys.exit(1)
+
+    # Create a JSON object containing all the coordinates
+    data = {
+        "type": "FeatureCollection",
+        "features": coordinates
     }
-    # Convert GeoJSON feature to JSON string and URL encode it
-    stringify = json.dumps(data1)
+
+    # Convert the data to JSON string
+    stringify = json.dumps(data)
+
     uriencoded = urllib.parse.quote(stringify)
-    # Construct URL and open it in browser
+    # Construct URL and open it in the browser
     url = "http://geojson.io/#data=data:application/json," + uriencoded
     webbrowser.open(url)
-else:
-    print("Unable to process: " + coord_str)
+
+except FileNotFoundError:
+    print("Error: File not found. Please provide a valid file path.")
+    sys.exit(1)
