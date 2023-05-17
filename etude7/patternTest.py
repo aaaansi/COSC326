@@ -16,6 +16,9 @@ def identify_coordinate_type(coord_string):
     dms_form_regex = r'^(-?\d+)°(\d+)\'(\d+(\.\d+)?)\"([NS]), (\d+)°(\d+)\'(\d+(\.\d+)?)\"([EW])(?: (.+))?'
     ddm_form_regex = r'^[+-]?\d{1,3}(?:\.\d+)?°?[NSEW]?, [+-]?\d{1,2}(?:\.\d+)?\'?[NSEW]?$'
     form_with_Label = r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
+    pattern_label = r'^([NS]) (\d+(\.\d+)?), ([EW]) (\d+(\.\d+)?) ?(.+)?$'
+    pattern_label_degree = r'^(\d+(\.\d+)?)° ([NS]), (\d+(\.\d+)?)° ([EW])(?: (.+))?$'
+    reverse_label = r'^(-?\d+(\.\d+)?)\s?([NS]),\s?(-?\d+(\.\d+)?)\s?([WE])(?:\s(.+))?$'
 
     match = re.match(form_with_Label, coord_string)
     if match:
@@ -32,8 +35,20 @@ def identify_coordinate_type(coord_string):
             label = "Null"
 
         return latitude, longitude, label
+    elif re.match(reverse_label, coord_string):
+        match = re.match(reverse_label, coord_string)
+        latitude = float(match.group(1))
+        latitude_dir = match.group(3)
+        latitude = -latitude if latitude_dir == 'W' else latitude
 
-    if re.match(standard_form_regex, coord_string):
+        longitude = float(match.group(4))
+        longitude_dir = match.group(6)
+        longitude = -longitude if longitude_dir == 'S' else longitude
+
+        label = match.group(7) if match.group(7) else 'Null'
+        
+        return latitude, longitude, label
+    elif re.match(standard_form_regex, coord_string):
         return None, None, None
     elif re.match(standard_form_decimal_diff_regex, coord_string):
         return None, None, None
@@ -41,6 +56,7 @@ def identify_coordinate_type(coord_string):
         return None, None, None
     elif re.match(non_negative_lat_long_regex, coord_string):
         return None, None, None
+    
     elif re.match(dms_form_regex, coord_string):
         match = re.match(dms_form_regex, coord_string)
         latitude_deg = float(match.group(1))
@@ -60,6 +76,30 @@ def identify_coordinate_type(coord_string):
         return latitude, longitude, label
     elif re.match(ddm_form_regex, coord_string):
         return None, None, None
+    elif re.match(pattern_label_degree, coord_string):
+        match = re.match(pattern_label_degree, coord_string)
+        latitude = float(match.group(1))
+        latitude_dir = match.group(3)
+        latitude = -latitude if latitude_dir == 'S' else latitude
+
+        longitude = float(match.group(4))
+        longitude_dir = match.group(6)
+        longitude = -longitude if longitude_dir == 'W' else longitude
+
+        label = match.group(7) if match.group(7) else 'Null'
+
+        return latitude,longitude, label
+    elif re.match(pattern_label, coord_string):
+        match = re.match(pattern_label, coord_string)
+        latitude_dir = match.group(1)
+        latitude = -float(match.group(2)) if latitude_dir == 'S' else float(match.group(2))
+
+        longitude_dir = match.group(4)
+        longitude = -float(match.group(5)) if longitude_dir == 'W' else float(match.group(5))
+
+        label = match.group(7) if match.group(7) else 'Null'
+
+        return latitude, longitude, label
     else:
         print("Unable to process: ", coord_string)
         return None, None, None
