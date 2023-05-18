@@ -10,6 +10,7 @@ def identify_coordinate_type(coord_string):
     coord_string = coord_string.strip()  # Remove leading and trailing spaces
 
     standard_form_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?, [+-]?\d{1,3}(?:\.\d{1,6})?$'
+    reverse_label = r'^(-?\d+(\.\d+)?)\s?([WE]),\s?(-?\d+(\.\d+)?)\s?([NS])?(?:\s(.+))?$'
     standard_form_decimal_diff_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?, [+-]?\d{1,3}(?:\.\d+)?$'
     standard_form_missing_comma_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})? [+-]?\d{1,3}(?:\.\d{1,6})?$'
     non_negative_lat_long_regex = r'^[+-]?\d{1,3}(?:\.\d{1,6})?(?:[NS]|[SN]), [+-]?\d{1,3}(?:\.\d{1,6})?(?:[EW]|[WE])?$'
@@ -18,10 +19,27 @@ def identify_coordinate_type(coord_string):
     form_with_Label = r'^(-?\d+(?:\.\d+)?)\s*([NS])?,?\s*(-?\d+(?:\.\d+)?)\s*([WE])?(?:\s+(.+))?$'
     pattern_label = r'^([NS]) (\d+(\.\d+)?), ([EW]) (\d+(\.\d+)?) ?(.+)?$'
     pattern_label_degree = r'^(\d+(\.\d+)?)° ([NS]), (\d+(\.\d+)?)° ([EW])(?: (.+))?$'
-    reverse_label = r'^(-?\d+(\.\d+)?)\s?([NS]),\s?(-?\d+(\.\d+)?)\s?([WE])(?:\s(.+))?$'
 
-    match = re.match(form_with_Label, coord_string)
-    if match:
+    if re.match(reverse_label, coord_string):
+        match = re.match(reverse_label, coord_string)
+        longitude = float(match.group(1))
+        longitude_dir = match.group(3)
+        longitude = -longitude if longitude_dir == 'W' else longitude
+
+        latitude = float(match.group(4))
+        latitude_dir = match.group(6)
+        latitude = -latitude if latitude_dir == 'S' else latitude
+
+        label = match.group(7) if match.group(7) else 'Null'
+
+        # Check latitude and longitude ranges
+        if not (-90.000000 <= latitude <= 90.000000) or not (-180.000000 <= longitude <= 180.000000):
+            print("Out of range")
+            return None, None, None
+
+        return latitude, longitude, label
+    elif re.match(form_with_Label, coord_string):
+        match = re.match(form_with_Label, coord_string)
         latitude = float(match.group(1))
         if match.group(2) == 'S':
             latitude *= -1
@@ -35,19 +53,6 @@ def identify_coordinate_type(coord_string):
             label = "Null"
 
         return latitude, longitude, label
-    elif re.match(reverse_label, coord_string):
-        match = re.match(reverse_label, coord_string)
-        latitude = float(match.group(1))
-        latitude_dir = match.group(3)
-        latitude = -latitude if latitude_dir == 'W' else latitude
-
-        longitude = float(match.group(4))
-        longitude_dir = match.group(6)
-        longitude = -longitude if longitude_dir == 'S' else longitude
-
-        label = match.group(7) if match.group(7) else 'Null'
-        
-        return latitude, longitude, label
     elif re.match(standard_form_regex, coord_string):
         return None, None, None
     elif re.match(standard_form_decimal_diff_regex, coord_string):
@@ -56,7 +61,6 @@ def identify_coordinate_type(coord_string):
         return None, None, None
     elif re.match(non_negative_lat_long_regex, coord_string):
         return None, None, None
-    
     elif re.match(dms_form_regex, coord_string):
         match = re.match(dms_form_regex, coord_string)
         latitude_deg = float(match.group(1))
@@ -88,6 +92,7 @@ def identify_coordinate_type(coord_string):
 
         label = match.group(7) if match.group(7) else 'Null'
 
+
         return latitude,longitude, label
     elif re.match(pattern_label, coord_string):
         match = re.match(pattern_label, coord_string)
@@ -108,6 +113,8 @@ def identify_coordinate_type(coord_string):
 # Example usage
 coordinates = []
 
+# Rest of the code...
+
 try:
     if len(sys.argv) > 1:  # Check if command-line arguments are provided
         # Get the file path from the command-line argument
@@ -117,9 +124,14 @@ try:
         with open(file_path, "r") as file:
             for line in file:
                 coord_string = line.strip()
-                latitude, longitude, label = identify_coordinate_type(
-                    coord_string)
+                latitude, longitude, label = identify_coordinate_type(coord_string)
+
                 if latitude is not None:
+                    # Check latitude and longitude ranges
+                    if not (-90.000000 <= latitude <= 90.000000) or not (-180.000000 <= longitude <= 180.000000):
+                        print("Out of range")
+                        continue
+
                     coordinates.append({
                         "type": "Feature",
                         "geometry": {
@@ -133,14 +145,18 @@ try:
     else:
         while True:
             try:
-                coord_string = input(
-                    "ENTER COORDINATE (or press Enter to finish): ")
+                coord_string = input("ENTER COORDINATE (or press Enter to finish): ")
                 if coord_string == "":
                     break
 
-                latitude, longitude, label = identify_coordinate_type(
-                    coord_string)
+                latitude, longitude, label = identify_coordinate_type(coord_string)
+
                 if latitude is not None:
+                    # Check latitude and longitude ranges
+                    if not (-90.000000 <= latitude <= 90.000000) or not (-180.000000 <= longitude <= 180.000000):
+                        print("Out of range")
+                        continue
+
                     coordinates.append({
                         "type": "Feature",
                         "geometry": {
@@ -152,8 +168,7 @@ try:
                         }
                     })
             except EOFError:
-                print(
-                    "Error: End of input reached. Make sure the input file is not empty.")
+                print("Error: End of input reached. Make sure the input file is not empty.")
                 sys.exit(1)
 
     # Create a JSON object containing all the coordinates
@@ -166,6 +181,7 @@ try:
     stringify = json.dumps(data)
 
     uriencoded = urllib.parse.quote(stringify)
+
     # Construct URL and open it in the browser
     url = "http://geojson.io/#data=data:application/json," + uriencoded
     webbrowser.open(url)
